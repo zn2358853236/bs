@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="homePage" extends="base">
+	
+		<default-interceptor-ref name="defaultStack" />
+		
+		<!-- 用户登录Action -->
+		<action name="bbs_*" class="indexAction" method="{1}">
+			<result name="home">WEB-INF/jsp/index/index.jsp</result>
+			
+			
+		</action>
+		<!-- 配置验证码的Action -->
+		<action name="checkImg" class="checkImgAction"></action>
+		
+	</package>
+</struts>

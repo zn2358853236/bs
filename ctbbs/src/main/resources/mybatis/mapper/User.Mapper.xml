@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wm.com.ctbbs.dao.impl.UserDaoImpl">
+
+	
+	<resultMap id="beanMap" type="User">
+		<id column="id" property="id" />
+		<result column="create_time" property="createTime" />
+		<result column="version" property="version" />
+		<result column="user_no" property="userNo" />
+		<result column="user_pwd" property="userPwd" />
+		<result column="user_name" property="userName" />
+		<result column="sex" property="sex" />
+		<result column="user_work" property="userWork" />
+		<result column="work_area" property="workArea" />
+		<result column="user_location" property="userLocation" />
+		<result column="user_face" property="userFace" />
+		<result column="email" property="email" />
+		<result column="status" property="status" />
+		<result column="user_type" property="userType" />
+		<result column="last_login_time" property="lastLoginTime" />
+		<result column="is_changed_pwd" property="isChangedPwd" javaType="Boolean" jdbcType="INTEGER"/>
+		<result column="pwd_error_count" property="pwdErrorCount" />
+		<result column="pwd_error_time" property="pwdErrorTime" />
+		<result column="remark" property="remark" />
+		<result column="topicCount" property="topicCount" />
+		<result column="articleCount" property="articleCount" />
+		<result column="code" property="code" />
+	</resultMap>
+	
+	<!-- 用户信息表 -->
+	<sql id="user"> bbs_user </sql>
+	
+	<insert id="insert" parameterType="User" keyProperty="id" useGeneratedKeys="true">
+		insert into <include refid="user"/> 
+		(id,create_time,version,user_no,
+		user_pwd,user_name,sex,
+		user_work,work_area,user_location,
+		user_face,email, status, 
+		user_type, last_login_time, 
+		is_changed_pwd, pwd_error_count,
+		 pwd_error_time,remark,topicCount,articleCount,code) 
+		values (0, NOW(),0,
+		#{userNo},#{userPwd},#{userName},
+		 #{sex}, #{userWork}, #{workArea},
+		 #{userLocation}, #{userFace},
+		#{email}, #{status}, #{userType},
+		 #{lastLoginTime}, #{isChangedPwd,
+		 javaType=Boolean,jdbcType=INTEGER},
+		  0, #{pwdErrorTime}, #{remark},0,0,#{code})
+	</insert>
+	
+	<update id="update" parameterType="User">
+		update <include refid="user"/>
+		<set>
+		    <if test="version !=null">version = #{version}+1,</if>			
+			<if test="userNo != null">user_no =#{userNo},</if>
+			<if test="userPwd != null">user_pwd =#{userPwd},</if>
+			<if test="userName != null">user_name =#{userName},</if>
+			<if test="sex != null">sex =#{sex},</if>
+			<if test="userWork != null">user_work =#{userWork},</if>
+			<if test="workArea != null">work_area =#{workArea},</if>
+			<if test="userLocation !=null">user_location =#{userLocation},</if>
+			<if test="userFace !=null">user_face =#{userFace},</if>
+			<if test="email !=null">email =#{email},</if>
+			<if test="status !=null">status =#{status},</if>
+			<if test="userType !=null">user_type =#{userType},</if>
+			<if test="lastLoginTime !=null">last_login_time =#{lastLoginTime},</if>
+			<if test="isChangedPwd !=null">is_changed_pwd =#{isChangedPwd},</if>
+			<if test="pwdErrorCount !=null">pwd_error_count =#{pwdErrorCount},</if>		
+	        <if test="pwdErrorTime !=null">pwd_error_time =#{pwdErrorTime},</if>
+	        <if test="remark !=null">remark =#{remark},</if>
+	        <if test="topicCount !=null">topicCount =#{topicCount},</if>
+	        <if test="articleCount !=null">articleCount =#{articleCount}</if>
+		</set>
+		<where>
+			id = #{id} and version = #{version}
+		</where>
+	</update>
+	
+	
+  	<select id="getById" parameterType="long" resultMap="beanMap">
+    	select * from <include refid="user"/> where id = #{id}
+  	</select>
+  	
+  	<select id="findByUserNo" parameterType="string" resultMap="beanMap">
+    	select * from <include refid="user"/> where user_no= #{userNo} and status=100
+  	</select>
+  	
+  	<select id="findByUserCode" parameterType="string" resultMap="beanMap">
+    	select * from <include refid="user"/> where code= #{code}
+  	</select>
+  	
+  	<select id="listAll" resultMap="beanMap">
+    	select * from <include refid="user"/> order by id
+  	</select>
+  	
+  	<delete id="deleteById" parameterType="long">
+    	delete from <include refid="user"/> where id = #{id}
+  	</delete>
+
+    <sql id="condition_sql">
+		Equal query		
+			<if test="userNo != null">user_no =#{userNo},</if>
+			<if test="userPwd != null">user_pwd =#{userPwd},</if>
+			<if test="userName != null">user_name =#{userName},</if>
+			<if test="sex != null">sex =#{sex},</if>
+			<if test="userWork != null">user_work =#{userWork},</if>
+			<if test="workArea != null">work_area =#{workArea},</if>
+			<if test="userLocation !=null">user_location =#{userLocation},</if>
+			<if test="status !=null">status =#{status},</if>
+			<if test="userType !=null">user_type =#{userType},</if>
+			<if test="lastLoginTime !=null">last_login_time =#{lastLoginTime},</if>
+			<if test="isChangedPwd !=null">is_changed_pwd =#{isChangedPwd},</if>
+			<if test="pwdErrorCount !=null">pwd_error_count =#{pwdErrorCount},</if>		
+	        <if test="pwdErrorTime !=null">pwd_error_time =#{pwdErrorTime},</if>
+	        <if test="remark !=null">remark =#{remark}</if>
+		Like query
+		<if test="userNo != null and userNo != ''"> and user_no like CONCAT(CONCAT('%', #{userNo}), '%')</if>
+	</sql>
+	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
+		select * from  
+		<include refid="user"/>
+		
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		order by id desc 
+		limit #{pageFirst} , #{pageSize} 
+	</select>
+	
+	<select id="listPageCount" parameterType="java.util.Map" resultType="long">
+		select count(1) from <include refid="user"/>
+		<where>
+			<include refid="condition_sql"/>
+		</where>
+	</select>
+	 
+</mapper>
